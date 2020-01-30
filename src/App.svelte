@@ -31,7 +31,7 @@
 
     <CreateTask on:created={handleCreateTask} categories={$categories}/>
 
-    <ListTasks tasks={$tasks} on:deleted={handleDeleteTask}/>
+    <ListTasks tasks={$tasks} categories={$categories} on:deleted={handleDeleteTask}/>
 
     <CreateCategory on:created={handleCreateCategory}/>
 
