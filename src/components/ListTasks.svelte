@@ -7,7 +7,7 @@
 <ul>
     {#each tasks as task}
         <li>
-            <Task {...task} on:message/>
+            <Task {...task} on:deleted/>
         </li>
     {/each}
 </ul>

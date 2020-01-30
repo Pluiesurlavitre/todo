@@ -6,7 +6,7 @@
     export let name
 
     function deleteTask () {
-        dispatch('message', {id: id})
+        dispatch('deleted', {id: id})
     }
 
 

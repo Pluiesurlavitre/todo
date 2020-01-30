@@ -5,6 +5,8 @@
     const store = writable(localStorage.getItem('store') || '')
     import CreateTask from './components/CreateTask.svelte'
     import ListTasks from './components/ListTasks.svelte'
+    import CreateCategory from './components/CreateCategory.svelte'
+    import ListCategories from './components/ListCategories.svelte'
 
     function uuidv4 () {
         return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
@@ -13,36 +15,28 @@
         })
     }
 
-    store.subscribe(val => localStorage.setItem('store', val))
+    const tasks = writable(JSON.parse(localStorage.getItem('tasks')) || [])
+    tasks.subscribe(val => localStorage.setItem('tasks', JSON.stringify(val)))
 
-    const storeItems = writable(JSON.parse(localStorage.getItem('items')) || [])
+    const categories = writable(JSON.parse(localStorage.getItem('categories')) || [])
+    categories.subscribe(v => localStorage.setItem('categories', JSON.stringify(v)))
 
-    storeItems.subscribe(val => localStorage.setItem('items', JSON.stringify(val)))
-
-    let item = ''
-
-    function handleClick () {
-        storeItems.update(n => [...n, { 'name': item, id: uuidv4() }])
-        item = ''
-    }
-
-    function handleDelete (e) {
-        console.log('here')
-        storeItems.update(n => [...n].filter(i => i.id !== e.detail.id))
-    }
-
-    function handleCreated (e) {
-        storeItems.update(n => [...n, { 'name': e.detail, id: uuidv4() }])
-        item = ''
-    }
+    const handleCreateTask = e => tasks.update(n => [...n, { 'name': e.detail.title, id: uuidv4(), category_id: e.detail.selected }])
+    const handleCreateCategory = e => categories.update(n => [...n, { 'name': e.detail, id: uuidv4() }])
+    const handleDeleteTask = e => tasks.update(n => [...n].filter(i => i.id !== e.detail.id))
 
 </script>
 
 <main class="container mx-auto">
 
-    <CreateTask on:created={handleCreated}/>
+    <CreateTask on:created={handleCreateTask} categories={$categories}/>
 
-    <ListTasks tasks={$storeItems} on:message={handleDelete}/>
+    <ListTasks tasks={$tasks} on:deleted={handleDeleteTask}/>
+
+    <CreateCategory on:created={handleCreateCategory}/>
+
+    <ListCategories categories={$categories}/>
+
 
 </main>
 
